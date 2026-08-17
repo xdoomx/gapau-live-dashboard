@@ -110,6 +110,14 @@ section.drag-over { outline: 2px dashed var(--acc); outline-offset: 6px; border-
 .delta { font-weight: 700; font-size: 12px; }
 .delta.up { color: var(--up); }
 .delta.down { color: var(--down); }
+.active-refresh { display: flex; gap: 6px; align-items: center; }
+.seg {
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); color: var(--dim);
+  padding: 2px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-family: var(--font);
+  transition: background 0.15s, color 0.15s;
+}
+.seg:hover { background: rgba(255, 255, 255, 0.12); }
+.seg.on { background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 700; }
 .up { color: var(--up); }
 .down { color: var(--down); }
 .spark-wrap { position: relative; cursor: crosshair; }

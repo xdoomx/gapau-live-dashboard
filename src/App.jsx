@@ -7,6 +7,7 @@ const GIST_RAW = 'https://gist.githubusercontent.com/xdoomx/5cd331c11ca2bbd9d7ee
 // same-origin fallback (updates ~5 min via Pages build), jsDelivr last
 const DATA_URLS = [GIST_RAW, SNAP_SAME, SNAP_CDN]
 const REFRESH_MS = 75000
+const ACTIVE_KEY = 'gapau_active_refresh'
 const ORDER_KEY = 'gapau_tile_order'
 const AUTH_KEY = 'gapau_authed'
 const DASH_PASSWORD = 'OX12VJ49X6'
@@ -147,6 +148,8 @@ export default function App() {
   const [passErr, setPassErr] = useState(false)
   const [snap, setSnap] = useState(null)
   const [hist, setHist] = useState([])
+  const [activeSnap, setActiveSnap] = useState(null)
+  const [activeRefresh, setActiveRefresh] = useState(() => parseInt(localStorage.getItem(ACTIVE_KEY)) || 30000)
   const [err, setErr] = useState(null)
   const [clock, setClock] = useState(new Date())
   const [dragOver, setDragOver] = useState(null)
@@ -222,6 +225,30 @@ export default function App() {
     }
     return { rev, ord, active, pv24, nf24, reach24, foll, dms }
   }, [hist])
+
+  // "People on site now" tile: independently re-fetches the same-origin snapshot at the
+  // chosen cadence (10/30/60s). Same-origin only — the gist raw would 429 at these rates.
+  useEffect(() => {
+    let alive = true
+    const tick = async () => {
+      try {
+        const r = await fetch(SNAP_SAME + '?v=' + Date.now(), { cache: 'no-store' })
+        if (!r.ok) throw new Error('HTTP ' + r.status)
+        const d = await r.json()
+        if (!alive) return
+        const h = (d.history || []).filter(Boolean)
+        if (h.length) setActiveSnap(h[h.length - 1])
+      } catch (e) { /* keep last value; global poll still feeds the tile */ }
+    }
+    tick()
+    const id = setInterval(tick, activeRefresh)
+    return () => { alive = false; clearInterval(id) }
+  }, [activeRefresh])
+
+  const setActiveCadence = (ms) => {
+    localStorage.setItem(ACTIVE_KEY, String(ms))
+    setActiveRefresh(ms)
+  }
 
   const support = snap?.support
   const fiveMinAgo = useMemo(() => {
@@ -353,8 +380,16 @@ export default function App() {
                     <Sparkline values={series.ord.v.slice(-90)} labels={series.ord.l.slice(-90)} color="#8FA3E8" label="orders" />
                   </Card>
                   <Card label="Average order value" value={fmtMoney(snap?.aov)} sub="paid orders · AEST" />
-                  <Card label="People on site now" value={snap?.ga4_ready ? fmtInt(snap.active_users) : '—'}
-                    sub={snap?.ga4_ready ? 'live · refreshes every 60s' : 'GA4 setup pending — 2-min re-auth'}>
+                  <Card label="People on site now"
+                    value={(activeSnap?.ga4_ready ? fmtInt(activeSnap.active_users) : snap?.ga4_ready ? fmtInt(snap.active_users) : '—')}
+                    sub={(activeSnap?.ga4_ready || snap?.ga4_ready)
+                      ? <span className="active-refresh"><span className="dim">live</span>
+                          {[10000, 30000, 60000].map((ms) => (
+                            <button key={ms} className={'seg' + (activeRefresh === ms ? ' on' : '')}
+                              onClick={() => setActiveCadence(ms)}>{ms / 1000}s</button>
+                          ))}
+                        </span>
+                      : 'GA4 setup pending — 2-min re-auth'}>
                     <Sparkline values={series.active.v.slice(-90)} labels={series.active.l.slice(-90)} color="#7CE0A3" label="active users" />
                     {(snap?.pages?.length ?? 0) > 0 && (
                       <div className="pages">
