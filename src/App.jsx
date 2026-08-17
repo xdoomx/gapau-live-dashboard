@@ -350,6 +350,11 @@ export default function App() {
                     <SwagBar sold={snap?.swag_sold ?? 0} total={snap?.swag_total ?? 241} tracked={snap?.swag_tracked !== false} pct={snap?.swag_pct ?? 0} status={snap?.swag_status || 'pending'} />
                   </div>
                   <Card label="Email & SMS list" value={fmtInt(snap?.list_count)} sub="subscribers · 10,000 target">
+                    <div className="nf-grid">
+                      <div className="nf-row"><span>28d</span><b>{snap?.list_7d_sums?.sum_28d != null ? fmtInt(snap.list_7d_sums.sum_28d) : '—'}</b></div>
+                      <div className="nf-row"><span>7d</span><b>{snap?.list_7d_sums?.sum_7d != null ? fmtInt(snap.list_7d_sums.sum_7d) : '—'}</b></div>
+                      <div className="nf-row"><span>24h</span><b>{snap?.list_7d_sums?.sum_24h != null ? fmtInt(snap.list_7d_sums.sum_24h) : '—'}</b></div>
+                    </div>
                     <Sparkline
                       values={(snap?.list_7d || []).map((d) => d.count)}
                       labels={(snap?.list_7d || []).map((d) => d.date.slice(5).replace('-', '/'))}
