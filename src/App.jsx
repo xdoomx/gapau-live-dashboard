@@ -3,8 +3,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 const SNAP_SAME = './dashboard_snapshot.json'
 const SNAP_CDN = 'https://cdn.jsdelivr.net/gh/xdoomx/gapau-live-dashboard@master/dashboard_snapshot.json'
 const GIST_RAW = 'https://gist.githubusercontent.com/xdoomx/5cd331c11ca2bbd9d7eed0e7f5b366c3/raw/dashboard_snapshot.json'
-const DATA_URLS = [SNAP_SAME, SNAP_CDN, GIST_RAW]
-const REFRESH_MS = 30000
+// gist first (fresh, poller writes every minute; 75s poll stays under GitHub's 60/hr raw limit),
+// same-origin fallback (updates ~5 min via Pages build), jsDelivr last
+const DATA_URLS = [GIST_RAW, SNAP_SAME, SNAP_CDN]
+const REFRESH_MS = 75000
 const ORDER_KEY = 'gapau_tile_order'
 const AUTH_KEY = 'gapau_authed'
 const DASH_PASSWORD = 'OX12VJ49X6'
