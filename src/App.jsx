@@ -10,6 +10,10 @@ const SECTIONS = ['hero', 'sales', 'support', 'ig', 'top']
 const fmtMoney = (v) => '$' + Math.round(v ?? 0).toLocaleString('en-AU')
 const fmtInt = (v) => (v ?? 0).toLocaleString('en-AU')
 const fmtPct = (v) => Math.round((v ?? 0) * 10) / 10 + '%'
+const s7 = (arr) => {
+  const a = arr || []
+  return { v: a.map((x) => x.value), l: a.map((x) => (x.date || '').slice(5)) }
+}
 
 const cookieGet = (name) => {
   const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'))
@@ -375,7 +379,7 @@ export default function App() {
               return sec('ig', 'hero', (
                 <>
                   <Card label="IG followers" value={snap?.ig?.followers != null ? fmtInt(snap.ig.followers) : '—'} sub={snap?.ig ? `@gapaustralia · ${fmtInt(snap.ig.media_count ?? 0)} posts` : 'IG API — token pending'} wide>
-                    <Sparkline values={series.foll.v.slice(-90)} labels={series.foll.l.slice(-90)} color="#C2A675" label="followers" height={64} />
+                    <Sparkline values={s7(snap?.ig?.followers_7d_series).v} labels={s7(snap?.ig?.followers_7d_series).l} color="#C2A675" label="followers 7d" height={64} />
                   </Card>
                   <Card label="New followers" value={snap?.ig?.new_followers_24h != null ? fmtInt(snap.ig.new_followers_24h) : '—'} sub="IG API · 5 min">
                     <div className="nf-grid">
@@ -383,7 +387,7 @@ export default function App() {
                       <div className="nf-row"><span>7d</span><b>{snap?.ig?.new_followers_7d != null ? fmtInt(snap.ig.new_followers_7d) : '—'}</b></div>
                       <div className="nf-row"><span>24h</span><b>{snap?.ig?.new_followers_24h != null ? fmtInt(snap.ig.new_followers_24h) : '—'}</b></div>
                     </div>
-                    <Sparkline values={series.nf24.v.slice(-90)} labels={series.nf24.l.slice(-90)} color="#8FA3E8" label="new followers 24h" height={28} />
+                    <Sparkline values={s7(snap?.ig?.new_followers_7d_series).v} labels={s7(snap?.ig?.new_followers_7d_series).l} color="#8FA3E8" label="new followers 7d" height={28} />
                   </Card>
                   <Card label="Profile views" value={snap?.ig?.profile_views_24h != null ? fmtInt(snap.ig.profile_views_24h) : '—'} sub="IG API · 5 min">
                     <div className="nf-grid">
@@ -391,7 +395,7 @@ export default function App() {
                       <div className="nf-row"><span>7d</span><b>{snap?.ig?.profile_views_7d != null ? fmtInt(snap.ig.profile_views_7d) : '—'}</b></div>
                       <div className="nf-row"><span>24h</span><b>{snap?.ig?.profile_views_24h != null ? fmtInt(snap.ig.profile_views_24h) : '—'}</b></div>
                     </div>
-                    <Sparkline values={series.pv24.v.slice(-90)} labels={series.pv24.l.slice(-90)} color="#4C6FFF" label="profile views 24h" height={28} />
+                    <Sparkline values={s7(snap?.ig?.profile_views_7d_series).v} labels={s7(snap?.ig?.profile_views_7d_series).l} color="#4C6FFF" label="profile views 7d" height={28} />
                   </Card>
                   <Card label="Reach" value={snap?.ig?.reach_24h != null ? fmtInt(snap.ig.reach_24h) : '—'} sub="IG API · 5 min" wide>
                     <div className="nf-grid">
@@ -399,7 +403,7 @@ export default function App() {
                       <div className="nf-row"><span>7d</span><b>{snap?.ig?.reach_7d != null ? fmtInt(snap.ig.reach_7d) : '—'}</b></div>
                       <div className="nf-row"><span>24h</span><b>{snap?.ig?.reach_24h != null ? fmtInt(snap.ig.reach_24h) : '—'}</b></div>
                     </div>
-                    <Sparkline values={series.reach24.v.slice(-90)} labels={series.reach24.l.slice(-90)} color="#7CE0A3" label="reach 24h" height={64} />
+                    <Sparkline values={s7(snap?.ig?.reach_7d_series).v} labels={s7(snap?.ig?.reach_7d_series).l} color="#7CE0A3" label="reach 7d" height={64} />
                   </Card>
                   <Card label="DMs" value={snap?.ig?.dms_60m != null ? fmtInt(snap.ig.dms_60m) : '—'} sub="inbound · last 60 min" delta={snap?.ig?.dms_60m_pct} wide>
                     <div className="nf-grid">
