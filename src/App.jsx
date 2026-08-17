@@ -173,7 +173,7 @@ export default function App() {
 
   const series = useMemo(() => {
     const mk = () => ({ v: [], l: [] })
-    const rev = mk(), ord = mk(), active = mk(), pv24 = mk(), nf24 = mk(), reach24 = mk(), foll = mk()
+    const rev = mk(), ord = mk(), active = mk(), pv24 = mk(), nf24 = mk(), reach24 = mk(), foll = mk(), dms = mk()
     for (const p of hist) {
       const lab = p.ts_local || (p.ts ? new Date(p.ts).toLocaleTimeString('en-AU', { hour12: false }) : '')
       if (typeof p.revenue === 'number') { rev.v.push(p.revenue); rev.l.push(lab) }
@@ -187,8 +187,10 @@ export default function App() {
       if (typeof rc === 'number') { reach24.v.push(rc); reach24.l.push(lab) }
       const fl = p.ig?.followers
       if (typeof fl === 'number') { foll.v.push(fl); foll.l.push(lab) }
+      const dm = p.ig?.dms_60m
+      if (typeof dm === 'number') { dms.v.push(dm); dms.l.push(lab) }
     }
-    return { rev, ord, active, pv24, nf24, reach24, foll }
+    return { rev, ord, active, pv24, nf24, reach24, foll, dms }
   }, [hist])
 
   const support = snap?.support
@@ -399,9 +401,14 @@ export default function App() {
                     </div>
                     <Sparkline values={series.reach24.v.slice(-90)} labels={series.reach24.l.slice(-90)} color="#7CE0A3" label="reach 24h" height={64} />
                   </Card>
-                  <Card label="DMs · last 60 min" value={snap?.ig?.dms_60m != null ? fmtInt(snap.ig.dms_60m) : '—'} sub="inbound · IG API · 5 min" delta={snap?.ig?.dms_60m_pct} />
-                  <Card label="DMs · last 4 hrs" value={snap?.ig?.dms_4h != null ? fmtInt(snap.ig.dms_4h) : '—'} sub="inbound · IG API · 5 min" delta={snap?.ig?.dms_4h_pct} />
-                  <Card label="Unread threads" value={snap?.ig?.unread_threads != null ? fmtInt(snap.ig.unread_threads) : '—'} sub={snap?.ig ? `${fmtInt(snap.ig.new_messages ?? 0)} new msgs` : 'IG API — token pending'} />
+                  <Card label="DMs" value={snap?.ig?.dms_60m != null ? fmtInt(snap.ig.dms_60m) : '—'} sub="inbound · last 60 min" delta={snap?.ig?.dms_60m_pct} wide>
+                    <div className="nf-grid">
+                      <div className="nf-row"><span>4 hrs</span><b>{snap?.ig?.dms_4h != null ? fmtInt(snap.ig.dms_4h) : '—'} <small className="dim">{snap?.ig?.dms_4h_pct != null ? (snap.ig.dms_4h_pct >= 0 ? '▲' : '▼') + ' ' + fmtPct(Math.abs(snap.ig.dms_4h_pct)) : ''}</small></b></div>
+                      <div className="nf-row"><span>unread</span><b>{snap?.ig?.unread_threads != null ? fmtInt(snap.ig.unread_threads) : '—'}</b></div>
+                      <div className="nf-row"><span>new msgs</span><b>{snap?.ig?.new_messages != null ? fmtInt(snap.ig.new_messages) : '—'}</b></div>
+                    </div>
+                    <Sparkline values={series.dms.v.slice(-90)} labels={series.dms.l.slice(-90)} color="#C2A675" label="dms 60m" height={64} />
+                  </Card>
                 </>
               ))
             default:
