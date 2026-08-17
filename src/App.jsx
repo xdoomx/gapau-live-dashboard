@@ -58,22 +58,36 @@ function Sparkline({ values, labels = [], color = '#4C6FFF', height = 44, label,
   }
   const tipLeft = hIdx != null ? Math.max(10, Math.min(90, (hIdx / (v.length - 1)) * 100)) : 0
   const tipTop = hIdx != null ? yAt(hIdx) : 0
+  // evenly-spaced date/time labels under the chart (max ~5)
+  const dateTicks = useMemo(() => {
+    if (!l.length) return []
+    const n = l.length
+    const idxs = n <= 5 ? l.map((_, i) => i) : [0, Math.round(n / 4), Math.round(n / 2), Math.round(3 * n / 4), n - 1]
+    return idxs.map((i) => (l[i] || '').replace(/:\d\d$/, ''))
+  }, [l])
   return (
     <div className="spark-wrap" style={{ height }} ref={wrapRef} onMouseMove={onMove} onMouseLeave={() => setHIdx(null)}>
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: '100%', height }} aria-label={label}>
-        <polygon points={area} fill={color} opacity="0.14" />
-        <polyline points={pts.join(' ')} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-        {hIdx != null && <line x1={xAt(hIdx)} y1={0} x2={xAt(hIdx)} y2={H} stroke="var(--dim)" strokeWidth="1" strokeDasharray="3 3" />}
-        {hIdx != null && <circle cx={xAt(hIdx)} cy={yAt(hIdx)} r="4" fill={color} stroke="var(--navy)" strokeWidth="1.5" />}
-        <circle cx={W} cy={yAt(v.length - 1)} r="3" fill={color} />
-      </svg>
-      {hIdx != null && (
-        <div
-          className="spark-tip"
-          style={{ left: tipLeft + '%', top: tipTop + 8, transform: tipTop < 26 ? 'translate(-50%, 0)' : 'translate(-50%, -100%)' }}
-        >
-          <div className="spark-tip-v">{fmt(v[hIdx])}</div>
-          <div className="spark-tip-t">{l[hIdx]}</div>
+      <div className="spark-svg" style={{ height }}>
+        <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: '100%', height }} aria-label={label}>
+          <polygon points={area} fill={color} opacity="0.14" />
+          <polyline points={pts.join(' ')} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+          {hIdx != null && <line x1={xAt(hIdx)} y1={0} x2={xAt(hIdx)} y2={H} stroke="var(--dim)" strokeWidth="1" strokeDasharray="3 3" />}
+          {hIdx != null && <circle cx={xAt(hIdx)} cy={yAt(hIdx)} r="4" fill={color} stroke="var(--navy)" strokeWidth="1.5" />}
+          <circle cx={W} cy={yAt(v.length - 1)} r="3" fill={color} />
+        </svg>
+        {hIdx != null && (
+          <div
+            className="spark-tip"
+            style={{ left: tipLeft + '%', top: tipTop + 8, transform: tipTop < 26 ? 'translate(-50%, 0)' : 'translate(-50%, -100%)' }}
+          >
+            <div className="spark-tip-v">{fmt(v[hIdx])}</div>
+            <div className="spark-tip-t">{l[hIdx]}</div>
+          </div>
+        )}
+      </div>
+      {dateTicks.length > 0 && (
+        <div className="spark-dates">
+          {dateTicks.map((t, i) => <span key={i}>{t}</span>)}
         </div>
       )}
     </div>

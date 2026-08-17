@@ -112,6 +112,8 @@ section.drag-over { outline: 2px dashed var(--acc); outline-offset: 6px; border-
 .up { color: var(--up); }
 .down { color: var(--down); }
 .spark-wrap { position: relative; cursor: crosshair; }
+.spark-svg { position: relative; }
+.spark-dates { display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color: var(--dim); letter-spacing: 0.04em; font-variant-numeric: tabular-nums; }
 .spark-tip {
   position: absolute; z-index: 6; pointer-events: none; white-space: nowrap;
   background: #0B1547; border: 1px solid var(--acc); border-radius: 6px;
