@@ -44,6 +44,13 @@ function Sparkline({ values, labels = [], color = '#4C6FFF', height = 44, label,
   }, [values, labels])
   const v = pairs.map((p) => p[0])
   const l = pairs.map((p) => p[1])
+  // evenly-spaced date/time labels under the chart (max ~5) — MUST run before any early return (hooks order)
+  const dateTicks = useMemo(() => {
+    if (!l.length) return []
+    const n = l.length
+    const idxs = n <= 5 ? l.map((_, i) => i) : [0, Math.round(n / 4), Math.round(n / 2), Math.round(3 * n / 4), n - 1]
+    return idxs.map((i) => (l[i] || '').replace(/:\d\d$/, ''))
+  }, [l])
   if (v.length < 2) {
     return <div className="spark-empty" style={{ height }}>{label ? 'collecting data…' : '—'}</div>
   }
@@ -63,13 +70,6 @@ function Sparkline({ values, labels = [], color = '#4C6FFF', height = 44, label,
   }
   const tipLeft = hIdx != null ? Math.max(10, Math.min(90, (hIdx / (v.length - 1)) * 100)) : 0
   const tipTop = hIdx != null ? yAt(hIdx) : 0
-  // evenly-spaced date/time labels under the chart (max ~5)
-  const dateTicks = useMemo(() => {
-    if (!l.length) return []
-    const n = l.length
-    const idxs = n <= 5 ? l.map((_, i) => i) : [0, Math.round(n / 4), Math.round(n / 2), Math.round(3 * n / 4), n - 1]
-    return idxs.map((i) => (l[i] || '').replace(/:\d\d$/, ''))
-  }, [l])
   return (
     <div className="spark-wrap" style={{ height }} ref={wrapRef} onMouseMove={onMove} onMouseLeave={() => setHIdx(null)}>
       <div className="spark-svg" style={{ height }}>
@@ -407,7 +407,7 @@ export default function App() {
                 </>
               ))
             case 'ig':
-              return sec('ig', 'hero', (
+              return sec('ig', 'ig-grid', (
                 <>
                   <Card label="IG followers" value={snap?.ig?.followers != null ? fmtInt(snap.ig.followers) : '—'} sub={snap?.ig ? `@gapaustralia · ${fmtInt(snap.ig.media_count ?? 0)} posts` : 'IG API — token pending'} wide>
                     <Sparkline values={s7(snap?.ig?.followers_7d_series).v} labels={s7(snap?.ig?.followers_7d_series).l} color="#C2A675" label="followers 7d" height={64} />

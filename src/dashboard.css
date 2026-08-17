@@ -68,7 +68,7 @@ section:hover .drag-handle { opacity: 0.9; background: rgba(255, 255, 255, 0.06)
 .grip { font-size: 14px; letter-spacing: 4px; }
 section.drag-over { outline: 2px dashed var(--acc); outline-offset: 6px; border-radius: 14px; }
 
-.hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+.hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .brand { display: flex; gap: 14px; align-items: center; }
 .logo {
   width: 44px; height: 44px; border-radius: 8px; background: #031BA1;
@@ -87,9 +87,10 @@ section.drag-over { outline: 2px dashed var(--acc); outline-offset: 6px; border-
 }
 .kiosk:hover { background: rgba(255, 255, 255, 0.14); }
 
-.hero { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.hero { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 16px; }
 .row { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; margin-top: 16px; }
 .row.two { grid-template-columns: 1fr 1fr; }
+.ig-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px; }
 
 .card {
   background: linear-gradient(180deg, var(--navy-2), rgba(18, 34, 95, 0.55));
@@ -166,6 +167,6 @@ section.drag-over { outline: 2px dashed var(--acc); outline-offset: 6px; border-
 }
 @media (max-width: 640px) {
   .app { padding: 16px; }
-  .hero, .row { grid-template-columns: 1fr; }
+  .hero, .row, .ig-grid { grid-template-columns: 1fr; }
   .card-value { font-size: 34px; }
 }
