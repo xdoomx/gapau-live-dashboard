@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 const GIST_RAW = 'https://gist.githubusercontent.com/xdoomx/5cd331c11ca2bbd9d7eed0e7f5b366c3/raw/dashboard_snapshot.json'
+const SNAP_CDN = 'https://cdn.jsdelivr.net/gh/xdoomx/gapau-live-dashboard@gh-pages/dashboard_snapshot.json'
+const DATA_URLS = [SNAP_CDN, GIST_RAW]
 const REFRESH_MS = 30000
 const ORDER_KEY = 'gapau_tile_order'
 const AUTH_KEY = 'gapau_authed'
@@ -166,9 +168,16 @@ export default function App() {
     let alive = true
     const load = async () => {
       try {
-        const r = await fetch(GIST_RAW + '?v=' + Date.now(), { cache: 'no-store' })
-        if (!r.ok) throw new Error('HTTP ' + r.status)
-        const d = await r.json()
+        let d = null
+        for (const u of DATA_URLS) {
+          try {
+            const r = await fetch(u + '?v=' + Date.now(), { cache: 'no-store' })
+            if (!r.ok) throw new Error('HTTP ' + r.status)
+            d = await r.json()
+            break
+          } catch (e) { /* try next source */ }
+        }
+        if (!d) throw new Error('all data sources failed')
         if (!alive) return
         const h = (d.history || []).filter(Boolean)
         const seen = new Set()
