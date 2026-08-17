@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-const GIST_RAW = 'https://gist.githubusercontent.com/xdoomx/5cd331c11ca2bbd9d7eed0e7f5b366c3/raw/dashboard_snapshot.json'
+const SNAP_SAME = './dashboard_snapshot.json'
 const SNAP_CDN = 'https://cdn.jsdelivr.net/gh/xdoomx/gapau-live-dashboard@master/dashboard_snapshot.json'
-const DATA_URLS = [SNAP_CDN, GIST_RAW]
+const GIST_RAW = 'https://gist.githubusercontent.com/xdoomx/5cd331c11ca2bbd9d7eed0e7f5b366c3/raw/dashboard_snapshot.json'
+const DATA_URLS = [SNAP_SAME, SNAP_CDN, GIST_RAW]
 const REFRESH_MS = 30000
 const ORDER_KEY = 'gapau_tile_order'
 const AUTH_KEY = 'gapau_authed'
