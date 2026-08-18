@@ -8,10 +8,10 @@ const GIST_RAW = 'https://gist.githubusercontent.com/xdoomx/5cd331c11ca2bbd9d7ee
 const DATA_URLS = [GIST_RAW, SNAP_SAME, SNAP_CDN]
 const REFRESH_MS = 75000
 const ACTIVE_KEY = 'gapau_active_refresh'
-const ORDER_KEY = 'gapau_tile_order'
+const ORDER_KEY = 'gapau_tile_order_v2'
 const AUTH_KEY = 'gapau_authed'
 const DASH_PASSWORD = 'OX12VJ49X6'
-const SECTIONS = ['hero', 'sales', 'support', 'ig', 'top']
+const SECTIONS = ['hero', 'sales', 'top', 'support', 'ig']
 
 const fmtMoney = (v) => '$' + Math.round(v ?? 0).toLocaleString('en-AU')
 const fmtInt = (v) => (v ?? 0).toLocaleString('en-AU')
