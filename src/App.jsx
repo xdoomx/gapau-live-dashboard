@@ -389,10 +389,10 @@ export default function App() {
                       <div><span>Purchases</span><b>{snap?.ga4_ready ? fmtInt(snap.purchases_30m) : '—'}</b></div>
                     </div>
                   </div>
-                  <Card label="People on site now" wide
+                  <Card label="People on site" wide
                     value={(activeSnap?.ga4_ready ? fmtInt(activeSnap.active_users) : snap?.ga4_ready ? fmtInt(snap.active_users) : '—')}
                     sub={(activeSnap?.ga4_ready || snap?.ga4_ready)
-                      ? <span className="dim">live · GA4 realtime</span>
+                      ? <span className="dim">active in last 5 min · GA4 realtime</span>
                       : 'GA4 setup pending — 2-min re-auth'}>
                     <div className="nf-grid nf-grid2">
                       <div className="nf-row"><span>Active users · last 30 min</span><b>{activeSnap?.active_29m != null ? fmtInt(activeSnap.active_29m) : snap?.active_29m != null ? fmtInt(snap.active_29m) : '—'}</b></div>
