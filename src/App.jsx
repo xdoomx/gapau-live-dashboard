@@ -12,7 +12,7 @@ const ORDER_KEY = 'gapau_tile_order_v2'
 const AUTH_KEY = 'gapau_authed'
 const DASH_PASSWORD = 'OX12VJ49X6'
 // 'ig' temporarily hidden (pre-launch) — restore by adding 'ig' back here
-const SECTIONS = ['hero', 'sales', 'top', 'support', 'swag']
+const SECTIONS = ['hero', 'sales', 'top', 'swag']
 
 const fmtMoney = (v) => '$' + Math.round(v ?? 0).toLocaleString('en-AU')
 const fmtInt = (v) => (v ?? 0).toLocaleString('en-AU')
@@ -420,9 +420,7 @@ export default function App() {
               ))
             case 'support':
               return sec('support', 'row support', (
-                <>
-                  <Card label="Last checked" value={support?.ts ? new Date(support.ts).toLocaleTimeString('en-AU', { hour12: false }) : '—'} sub={support?.cached ? 'Klaviyo Helpdesk · cached (scraper offline)' : 'Klaviyo · every 5 min'} />
-                </>
+                <></>
               ))
             case 'ig':
               return sec('ig', 'ig-grid', (
