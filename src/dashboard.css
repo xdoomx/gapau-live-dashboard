@@ -104,6 +104,7 @@ section.drag-over { outline: 2px dashed var(--acc); outline-offset: 6px; border-
 .card-value { font-size: 42px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; font-variant-numeric: tabular-nums; }
 .card-sub { font-size: 12px; color: var(--dim); margin-top: 6px; display: flex; gap: 6px; align-items: center; }
 .nf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.nf-grid2 { grid-template-columns: repeat(2, 1fr); }
 .nf-row { display: flex; flex-direction: column; gap: 2px; }
 .nf-row span { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
 .nf-row b { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; color: #fff; }
