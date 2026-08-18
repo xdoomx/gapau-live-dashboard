@@ -11,7 +11,7 @@ const ACTIVE_KEY = 'gapau_active_refresh'
 const ORDER_KEY = 'gapau_tile_order_v2'
 const AUTH_KEY = 'gapau_authed'
 const DASH_PASSWORD = 'OX12VJ49X6'
-const SECTIONS = ['hero', 'sales', 'top', 'support', 'ig']
+const SECTIONS = ['hero', 'sales', 'top', 'support', 'ig', 'swag']
 
 const fmtMoney = (v) => '$' + Math.round(v ?? 0).toLocaleString('en-AU')
 const fmtInt = (v) => (v ?? 0).toLocaleString('en-AU')
@@ -31,7 +31,7 @@ const cookieSet = (name, value, days = 365) => {
   document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + d.toUTCString() + '; path=/'
 }
 
-function Sparkline({ values, labels = [], color = '#4C6FFF', height = 44, label, fmt = fmtInt }) {
+function Sparkline({ values, labels = [], color = '#4C6FFF', height = 44, label, fmt = fmtInt, noDates = false }) {
   const [hIdx, setHIdx] = useState(null)
   const wrapRef = useRef(null)
   const pairs = useMemo(() => {
@@ -91,7 +91,7 @@ function Sparkline({ values, labels = [], color = '#4C6FFF', height = 44, label,
           </div>
         )}
       </div>
-      {dateTicks.length > 0 && (
+      {!noDates && dateTicks.length > 0 && (
         <div className="spark-dates">
           {dateTicks.map((t, i) => <span key={i}>{t}</span>)}
         </div>
@@ -390,7 +390,7 @@ export default function App() {
                           ))}
                         </span>
                       : 'GA4 setup pending — 2-min re-auth'}>
-                    <Sparkline values={series.active.v.slice(-90)} labels={series.active.l.slice(-90)} color="#7CE0A3" label="active users" />
+                    <Sparkline values={series.active.v.slice(-90)} labels={series.active.l.slice(-90)} color="#7CE0A3" label="active users" noDates />
                     {(snap?.pages?.length ?? 0) > 0 && (
                       <div className="pages">
                         {snap.pages.slice(0, 5).map((p) => (
@@ -407,9 +407,6 @@ export default function App() {
             case 'sales':
               return sec('sales', 'row', (
                 <>
-                  <div className="card wide">
-                    <SwagBar sold={snap?.swag_sold ?? 0} total={snap?.swag_total ?? 241} tracked={snap?.swag_tracked !== false} pct={snap?.swag_pct ?? 0} status={snap?.swag_status || 'pending'} />
-                  </div>
                   <div className="card">
                     <div className="card-label">Funnel · 30 min</div>
                     <div className="funnel">
@@ -423,8 +420,6 @@ export default function App() {
             case 'support':
               return sec('support', 'row support', (
                 <>
-                  <Card label="Instagram DMs" value={snap?.ig?.unread_threads != null ? fmtInt(snap.ig.unread_threads) : '—'}
-                    sub={snap?.ig ? `${fmtInt(snap.ig.new_messages ?? 0)} new msgs · IG API` : 'IG API — token pending'} />
                   <Card label="Last checked" value={support?.ts ? new Date(support.ts).toLocaleTimeString('en-AU', { hour12: false }) : '—'} sub={support?.cached ? 'Klaviyo Helpdesk · cached (scraper offline)' : 'Klaviyo · every 5 min'} />
                 </>
               ))
@@ -433,14 +428,6 @@ export default function App() {
                 <>
                   <Card label="IG followers" value={snap?.ig?.followers != null ? fmtInt(snap.ig.followers) : '—'} sub={snap?.ig ? `@gapaustralia · ${fmtInt(snap.ig.media_count ?? 0)} posts` : 'IG API — token pending'} wide>
                     <Sparkline values={s7(snap?.ig?.followers_7d_series).v} labels={s7(snap?.ig?.followers_7d_series).l} color="#C2A675" label="followers 7d" height={64} />
-                  </Card>
-                  <Card label="New followers" value={snap?.ig?.new_followers_24h != null ? fmtInt(snap.ig.new_followers_24h) : '—'} sub="IG API · 5 min">
-                    <div className="nf-grid">
-                      <div className="nf-row"><span>28d</span><b>{snap?.ig?.new_followers_28d != null ? fmtInt(snap.ig.new_followers_28d) : '—'}</b></div>
-                      <div className="nf-row"><span>7d</span><b>{snap?.ig?.new_followers_7d != null ? fmtInt(snap.ig.new_followers_7d) : '—'}</b></div>
-                      <div className="nf-row"><span>24h</span><b>{snap?.ig?.new_followers_24h != null ? fmtInt(snap.ig.new_followers_24h) : '—'}</b></div>
-                    </div>
-                    <Sparkline values={s7(snap?.ig?.new_followers_7d_series).v} labels={s7(snap?.ig?.new_followers_7d_series).l} color="#8FA3E8" label="new followers 7d" height={28} />
                   </Card>
                   <Card label="Profile views" value={snap?.ig?.profile_views_24h != null ? fmtInt(snap.ig.profile_views_24h) : '—'} sub="IG API · 5 min">
                     <div className="nf-grid">
@@ -467,6 +454,12 @@ export default function App() {
                     <Sparkline values={series.dms.v.slice(-90)} labels={series.dms.l.slice(-90)} color="#C2A675" label="dms 60m" height={64} />
                   </Card>
                 </>
+              ))
+            case 'swag':
+              return sec('swag', 'row', (
+                <div className="card wide span">
+                  <SwagBar sold={snap?.swag_sold ?? 0} total={snap?.swag_total ?? 241} tracked={snap?.swag_tracked !== false} pct={snap?.swag_pct ?? 0} status={snap?.swag_status || 'pending'} />
+                </div>
               ))
             default:
               return sec('top', 'row two', (
