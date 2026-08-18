@@ -12,7 +12,7 @@ const ORDER_KEY = 'gapau_tile_order_v2'
 const AUTH_KEY = 'gapau_authed'
 const DASH_PASSWORD = 'OX12VJ49X6'
 // 'ig' temporarily hidden (pre-launch) — restore by adding 'ig' back here
-const SECTIONS = ['hero', 'sales', 'top', 'swag']
+const SECTIONS = ['hero', 'top', 'swag']
 
 const fmtMoney = (v) => '$' + Math.round(v ?? 0).toLocaleString('en-AU')
 const fmtInt = (v) => (v ?? 0).toLocaleString('en-AU')
@@ -381,7 +381,15 @@ export default function App() {
                     <Sparkline values={series.ord.v.slice(-90)} labels={series.ord.l.slice(-90)} color="#8FA3E8" label="orders" />
                   </Card>
                   <Card label="Average order value" value={fmtMoney(snap?.aov)} sub="paid orders · AEST" />
-                  <Card label="People on site now"
+                  <div className="card">
+                    <div className="card-label">Funnel · 30 min</div>
+                    <div className="funnel">
+                      <div><span>Add to cart</span><b>{snap?.ga4_ready ? fmtInt(snap.atc_30m) : '—'}</b></div>
+                      <div><span>Checkout started</span><b>{snap?.ga4_ready ? fmtInt(snap.begin_checkout_30m) : '—'}</b></div>
+                      <div><span>Purchases</span><b>{snap?.ga4_ready ? fmtInt(snap.purchases_30m) : '—'}</b></div>
+                    </div>
+                  </div>
+                  <Card label="People on site now" wide
                     value={(activeSnap?.ga4_ready ? fmtInt(activeSnap.active_users) : snap?.ga4_ready ? fmtInt(snap.active_users) : '—')}
                     sub={(activeSnap?.ga4_ready || snap?.ga4_ready)
                       ? <span className="dim">live · GA4 realtime</span>
@@ -394,7 +402,7 @@ export default function App() {
                     <Sparkline values={series.active.v.slice(-90)} labels={series.active.l.slice(-90)} color="#7CE0A3" label="active users" noDates />
                     {(snap?.pages?.length ?? 0) > 0 && (
                       <div className="pages">
-                        {snap.pages.slice(0, 5).map((p) => (
+                        {snap.pages.slice(0, 10).map((p) => (
                           <div key={p.path} className="page-row">
                             <span className="page-path">{p.path}</span>
                             <span className="page-users">{p.users}</span>
@@ -407,16 +415,7 @@ export default function App() {
               ))
             case 'sales':
               return sec('sales', 'row', (
-                <>
-                  <div className="card">
-                    <div className="card-label">Funnel · 30 min</div>
-                    <div className="funnel">
-                      <div><span>Add to cart</span><b>{snap?.ga4_ready ? fmtInt(snap.atc_30m) : '—'}</b></div>
-                      <div><span>Checkout started</span><b>{snap?.ga4_ready ? fmtInt(snap.begin_checkout_30m) : '—'}</b></div>
-                      <div><span>Purchases</span><b>{snap?.ga4_ready ? fmtInt(snap.purchases_30m) : '—'}</b></div>
-                    </div>
-                  </div>
-                </>
+                <></>
               ))
             case 'support':
               return sec('support', 'row support', (
