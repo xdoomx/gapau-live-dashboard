@@ -446,14 +446,6 @@ export default function App() {
                     </div>
                     <Sparkline values={s7(snap?.ig?.reach_7d_series).v} labels={s7(snap?.ig?.reach_7d_series).l} color="#7CE0A3" label="reach 7d" height={64} />
                   </Card>
-                  <Card label="DMs" value={snap?.ig?.dms_60m != null ? fmtInt(snap.ig.dms_60m) : '—'} sub="inbound · last 60 min" delta={snap?.ig?.dms_60m_pct} wide>
-                    <div className="nf-grid">
-                      <div className="nf-row"><span>4 hrs</span><b>{snap?.ig?.dms_4h != null ? fmtInt(snap.ig.dms_4h) : '—'} <small className="dim">{snap?.ig?.dms_4h_pct != null ? (snap.ig.dms_4h_pct >= 0 ? '▲' : '▼') + ' ' + fmtPct(Math.abs(snap.ig.dms_4h_pct)) : ''}</small></b></div>
-                      <div className="nf-row"><span>unread</span><b>{snap?.ig?.unread_threads != null ? fmtInt(snap.ig.unread_threads) : '—'}</b></div>
-                      <div className="nf-row"><span>new msgs</span><b>{snap?.ig?.new_messages != null ? fmtInt(snap.ig.new_messages) : '—'}</b></div>
-                    </div>
-                    <Sparkline values={series.dms.v.slice(-90)} labels={series.dms.l.slice(-90)} color="#C2A675" label="dms 60m" height={64} />
-                  </Card>
                 </>
               ))
             case 'swag':
