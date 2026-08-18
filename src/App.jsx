@@ -410,17 +410,6 @@ export default function App() {
                   <div className="card wide">
                     <SwagBar sold={snap?.swag_sold ?? 0} total={snap?.swag_total ?? 241} tracked={snap?.swag_tracked !== false} pct={snap?.swag_pct ?? 0} status={snap?.swag_status || 'pending'} />
                   </div>
-                  <Card label="Email & SMS list" value={fmtInt(snap?.list_count)} sub="subscribers · 10,000 target">
-                    <div className="nf-grid">
-                      <div className="nf-row"><span>28d</span><b>{snap?.list_7d_sums?.sum_28d != null ? fmtInt(snap.list_7d_sums.sum_28d) : '—'}</b></div>
-                      <div className="nf-row"><span>7d</span><b>{snap?.list_7d_sums?.sum_7d != null ? fmtInt(snap.list_7d_sums.sum_7d) : '—'}</b></div>
-                      <div className="nf-row"><span>24h</span><b>{snap?.list_7d_sums?.sum_24h != null ? fmtInt(snap.list_7d_sums.sum_24h) : '—'}</b></div>
-                    </div>
-                    <Sparkline
-                      values={(snap?.list_7d || []).map((d) => d.count)}
-                      labels={(snap?.list_7d || []).map((d) => d.date.slice(5).replace('-', '/'))}
-                      color="#8FA3E8" label="list growth 7d" height={28} />
-                  </Card>
                   <div className="card">
                     <div className="card-label">Funnel · 30 min</div>
                     <div className="funnel">
@@ -434,8 +423,6 @@ export default function App() {
             case 'support':
               return sec('support', 'row support', (
                 <>
-                  <Card label="Help Desk queue" value={support?.klaviyo?.counts?.['All tickets'] != null ? fmtInt(support.klaviyo.counts['All tickets']) : '—'}
-                    sub={support?.klaviyo?.counts ? `Unassigned ${fmtInt(support.klaviyo.counts.Unassigned ?? 0)} · Spam ${fmtInt(support.klaviyo.counts.Spam ?? 0)}` : '5-min CDP feed · needs browser open'} />
                   <Card label="Instagram DMs" value={snap?.ig?.unread_threads != null ? fmtInt(snap.ig.unread_threads) : '—'}
                     sub={snap?.ig ? `${fmtInt(snap.ig.new_messages ?? 0)} new msgs · IG API` : 'IG API — token pending'} />
                   <Card label="Last checked" value={support?.ts ? new Date(support.ts).toLocaleTimeString('en-AU', { hour12: false }) : '—'} sub={support?.cached ? 'Klaviyo Helpdesk · cached (scraper offline)' : 'Klaviyo · every 5 min'} />
