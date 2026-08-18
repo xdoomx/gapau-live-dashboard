@@ -384,13 +384,13 @@ export default function App() {
                   <Card label="People on site now"
                     value={(activeSnap?.ga4_ready ? fmtInt(activeSnap.active_users) : snap?.ga4_ready ? fmtInt(snap.active_users) : '—')}
                     sub={(activeSnap?.ga4_ready || snap?.ga4_ready)
-                      ? <span className="active-refresh"><span className="dim">live</span>
-                          {[10000, 30000, 60000].map((ms) => (
-                            <button key={ms} className={'seg' + (activeRefresh === ms ? ' on' : '')}
-                              onClick={() => setActiveCadence(ms)}>{ms / 1000}s</button>
-                          ))}
-                        </span>
+                      ? <span className="dim">live · GA4 realtime</span>
                       : 'GA4 setup pending — 2-min re-auth'}>
+                    <div className="nf-grid">
+                      <div className="nf-row"><span>last 5 min</span><b>{activeSnap?.active_users != null ? fmtInt(activeSnap.active_users) : snap?.active_users != null ? fmtInt(snap.active_users) : '—'}</b></div>
+                      <div className="nf-row"><span>last 29 min</span><b>{activeSnap?.active_29m != null ? fmtInt(activeSnap.active_29m) : snap?.active_29m != null ? fmtInt(snap.active_29m) : '—'}</b></div>
+                      <div className="nf-row"><span>window</span><b>{activeRefresh / 1000}s</b></div>
+                    </div>
                     <Sparkline values={series.active.v.slice(-90)} labels={series.active.l.slice(-90)} color="#7CE0A3" label="active users" noDates />
                     {(snap?.pages?.length ?? 0) > 0 && (
                       <div className="pages">
